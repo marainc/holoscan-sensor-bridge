@@ -18,6 +18,7 @@
 from . import (
     imx274_player,
     linux_imx274_player,
+    framos_player,
     linux_tao_peoplenet,
     stereo_imx274_player,
     tao_peoplenet,
@@ -26,6 +27,7 @@ from . import (
 __all__ = [
     "imx274_player",
     "linux_imx274_player",
+    "framos_player",
     "linux_tao_peoplenet",
     "stereo_imx274_player",
     "tao_peoplenet",
