@@ -49,6 +49,10 @@ setuptools.setup(
         "hololink/operators",
         "hololink/sensors",
         "hololink/sensors/imx274",
+        "hololink/sensors/fr_imx662",
+        "hololink/sensors/fr_imx676",
+        "hololink/sensors/fr_imx678",
+        "hololink/sensors/fr_imx900",
         "tools",
     ],
     ext_modules=[
