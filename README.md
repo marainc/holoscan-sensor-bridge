@@ -5,7 +5,7 @@ Getting started with [Framos General Optics modules FSM:GO](https://www.framos.c
 This repository contains driver-source installation instructions for FRAMOS General Optic modules FSM:GO
 #
 > [!TIP]
-> Read official [Holoscan Sensor Bridge documentation](https://docs.nvidia.com/holoscan/sensor-bridge/latest/index.html) for better understanding.
+> Read official [Holoscan Sensor Bridge documentation](https://docs.nvidia.com/holoscan/sensor-bridge/2.0.0/index.html) for better understanding.
 
 #
 ## Supported hardware
