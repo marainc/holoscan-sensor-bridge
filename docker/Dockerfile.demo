@@ -39,6 +39,8 @@ RUN apt-get update \
 
 # Build tools with CMake
 RUN cd /opt/hololink \
+    && rm -f CMakeCache.txt \
+    && rm -rf CMakeFiles \
     && mkdir -p build \
     && cd build \
     && cmake -DHOLOLINK_BUILD_ONLY_NATIVE=ON .. \
@@ -68,3 +70,20 @@ RUN WHEEL=$(find /tmp/wheel -type f -name "hololink-*.whl") \
 
 # Install the C++ tools
 COPY --from=builder /opt/hololink/tools/usr/local/ /usr/local/
+
+# CUDA 13.0 will be mounted from host at /usr/local/cuda-13.0 via demo.sh volume mount
+
+# Set CUDA 13.0 environment variables (prioritize CUDA 13.0 over base image CUDA)
+ENV PATH=/usr/local/cuda-13.0/bin:/usr/local/cuda/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+ENV CUDA_HOME=/usr/local/cuda-13.0
+
+# Reinstall CuPy for CUDA 13.0 support (Jetson Thor compute_100)
+# Uninstall existing CuPy and install version compatible with CUDA 13
+RUN pip3 uninstall -y cupy cupy-cuda12x cupy-cuda11x 2>/dev/null || true \
+    && pip3 install --no-cache-dir cupy-cuda13x
+
+# Configure CuPy for Jetson Thor (compute_100)
+# Set environment variables to help CuPy with architecture detection
+ENV CUPY_NVCC_GENERATE_CODE="arch=compute_100,code=sm_100"
+ENV CUPY_ACCELERATORS=""

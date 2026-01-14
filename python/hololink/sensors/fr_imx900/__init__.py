@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 FRAMOS
 # SPDX-License-Identifier: Apache-2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,22 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# See README.md for detailed information.
-
-from . import (
-    imx274_player,
-    linux_imx274_player,
-    framos_player,
-    linux_tao_peoplenet,
-    stereo_imx274_player,
-    tao_peoplenet,
-)
+from . import fr_imx900, imx900_mode
 
 __all__ = [
-    "imx274_player",
-    "linux_imx274_player",
-    "framos_player",
-    "linux_tao_peoplenet",
-    "stereo_imx274_player",
-    "tao_peoplenet",
+    "fr_imx900",
+    "imx900_mode",
 ]

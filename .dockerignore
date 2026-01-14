@@ -7,6 +7,11 @@ __pycache__
 # build folders
 build*
 *.egg-info
+# CMake cache files
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+!CMakeLists.txt
 # tao peoplenet files
 *.fp16
 *.onnx

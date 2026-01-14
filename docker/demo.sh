@@ -71,10 +71,15 @@ docker run \
     -v /tmp/argus_socket:/tmp/argus_socket \
     -v /sys/devices:/sys/devices \
     -v /var/nvidia/nvcam/settings:/var/nvidia/nvcam/settings \
+    -v /usr/local/cuda-13.0:/usr/local/cuda-13.0:ro \
     -w $PWD \
     -e NVIDIA_DRIVER_CAPABILITIES=graphics,video,compute,utility,display \
     -e NVIDIA_VISIBLE_DEVICES=all \
     -e DISPLAY=$DISPLAY \
     -e enableRawReprocess=2 \
+    -e CUPY_NVCC_GENERATE_CODE="arch=compute_100,code=sm_100" \
+    -e PATH=/usr/local/cuda-13.0/bin:/usr/local/cuda/bin:$PATH \
+    -e LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:/usr/local/cuda/lib64:$LD_LIBRARY_PATH \
+    -e CUDA_HOME=/usr/local/cuda-13.0 \
     hololink-demo:$VERSION \
     $*
