@@ -1,40 +1,127 @@
 # Holoscan Sensor Bridge
 
-## Introduction
+> **Reference:** [holoscan-sensor-bridge (GitHub)](https://github.com/marainc/holoscan-sensor-bridge/tree/main)
 
-Holoscan Sensor Bridge provides a FPGA based interface for low-latency sensor data
-processing using GPUs. Peripheral device data is acquired by the FPGA and sent via UDP
-to the host system where ConnectX devices can write that UDP data directly into GPU
-memory. This software package supports integrating that equipment into Holoscan
-pipelines and provides several examples showing video processing and inference using an
-IMX274 camera with
-[Lattice Holoscan Sensor Bridge device](https://www.latticesemi.com/products/developmentboardsandkits/certuspro-nx-sensor-to-ethernet-bridge-board)
-or an IMX477 camera with
-[Microchip Holoscan Sensor Bridge](https://www.microchip.com/en-us/products/fpgas-and-plds/boards-and-kits/ethernet-sensor-bridge).
+---
 
-## Setup
+## Running Example (Thor)
 
-Holoscan sensor bridge software comes with an
-[extensive user guide](https://docs.nvidia.com/holoscan/sensor-bridge/latest/),
-including instructions for setup on
-[NVIDIA IGX](https://www.nvidia.com/en-us/edge-computing/products/igx/) and
-[NVIDIA AGX](https://developer.nvidia.com/embedded/learn/jetson-agx-orin-devkit-user-guide/index.html)
-configurations. Please see the user guide for host configuration and instructions on
-running unit tests.
+1. Connect the Thor directly to an HDMI display (not SSH)
+2. Connect over QSFP port to SFP 0 on the HSB
+3. Connect power
+4. Run the following commands:
 
-## Troubleshooting
+```bash
+xhost +
+sudo nmcli connection up hololink-eno1 
+ping 192.168.0.2
+cd holoscan-sensor-bridge && sh docker/demo.sh
+pytest  # No test should fail but some may skip
+hololink enumerate # should not show error
+python3 examples/framos_single_network_stereo_player.py --camera-type fr_imx676
+```
 
-Be sure and check the
-[release notes](https://docs.nvidia.com/holoscan/sensor-bridge/latest/release_notes.html)
-for frequently asked questions and troubleshooting tips.
+---
 
-## Submitting changes
+## Known Problems
 
-This software is published under the Apache 2.0 license, allowing unrestricted
-commercial and noncommercial use. Please consider submitting your changes to this
-framework by consulting the instructions in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+### Pytest failing with Python Fatal Error
 
-Note that all code submissions must pass the rules enforced by running `ci/lint.sh`. You
-can run the source code formatter by executing `ci/lint.sh --format` -- this will run
-the formatter on all C++, Python, and markdown files in the project, and is usually all
-that's necessary to get `ci/lint.sh` to pass.
+**Solution:**  
+Run from the host machine. This is a problem with display forwarding.
+
+---
+
+### `program_lattice_cpnx100` throws `RESPONSE_INVALID_CMD`
+
+**Status:** ❓ Unknown
+
+**Error:**
+
+```
+program_lattice_cpnx100 scripts/manifest.yaml
+Press 'y' or 'Y' to accept this end user license agreement: y
+INFO 0.0000 programmer.cpp:398 check_images tid=0xc7 -- context=cpnx content_name=fpga_cpnx_v2510_ea.bit
+INFO 0.4531 programmer.cpp:398 check_images tid=0xc7 -- context=clnx content_name=fpga_clnx_v2510_ea.bit
+INFO 1.5859 hololink.cpp:1776 configure_hsb tid=0xc7 -- HSB IP version=0x2412 datecode=0xc5e6cc11
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  write_uint32((0x110,0x2)) response_code=0X4(RESPONSE_INVALID_CMD)
+Aborted (core dumped)
+```
+
+**Solution:**  
+_Unknown_
+
+---
+
+### CUDA Errors
+
+**Solution:**  
+_Unknown_
+
+---
+
+### Unsure of FPGA Version
+
+**Solution:**  
+Run `hololink enumerate` — it will show the current firmware version under "HSB IP".
+
+---
+
+### `framos_player.py` FW Version Check Error
+
+**Error:**
+
+```
+FW version check error. should be 0x2501 or newer
+```
+
+**Related:** `hololink enumerate` may also show:
+
+```
+enumerator.cpp:216 deserialize_bootp_request tid=0x87 -- Unable to deserialize bootp request vendor data.
+```
+
+**Workaround:**  
+Flash the firmware:
+
+```bash
+hololink --force program scripts/manifest.yaml        # to 2412
+program_lattice_cpnx100 --force scripts/manifest-2507.yaml  # to 2507
+```
+
+---
+
+### `hololink --force program` Unsupported Strategy Error
+
+**Status:** ❓ Unknown
+
+**Error:**
+
+```
+root@ubuntu:/home/spotter/holoscan-sensor-bridge# hololink --force program scripts/manifest.yaml
+…
+   raise Exception(f'Unsupported strategy "{strategy_name}" specified.')
+Exception: Unsupported strategy "sensor_bridge_10" specified.
+```
+
+**Solution:**  
+_Unknown_
+
+---
+
+### Pytest `DEFAULT_MTU` AttributeError
+
+**Status:** ❓ Unknown
+
+**Error:**
+
+```
+tests/test_imx274_pattern.py:484: in <module>
+    hololink_module.DEFAULT_MTU,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'hololink' has no attribute 'DEFAULT_MTU'
+```
+
+**Solution:**  
+_Unknown_
