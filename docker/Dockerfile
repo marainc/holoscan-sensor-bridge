@@ -69,7 +69,7 @@ RUN apt-get update \
     libelf-dev \
   && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install meson ninja pyelftools
+RUN pip3 install meson ninja pyelftools 'cuda-python>=12.0,<13.0' nvtx
 # repeated ARG because it has to be inside the FROM above
 ARG CONTAINER_TYPE=invalid
 ENV CONTAINER_TYPE=${CONTAINER_TYPE}
