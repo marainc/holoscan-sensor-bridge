@@ -1,31 +1,67 @@
-# FRAMOS Sensor Module drivers for Nvidia Holoscan Sensor Bridge
+# Holoscan Sensor Bridge
 
-Getting started with [Framos General Optics modules FSM:GO](https://www.framos.com/en/fsmgo?utm_source=google&utm_medium=cpc&utm_campaign=FSM-GO_Product_Launch_2024) and Holoscan Sensor Bridge.
+## Supported Hardware
 
-This repository contains driver-source installation instructions for FRAMOS General Optic modules FSM:GO
-#
-> [!TIP]
-> Read official [Holoscan Sensor Bridge documentation](https://docs.nvidia.com/holoscan/sensor-bridge/2.0.0/index.html) for better understanding.
-
-#
-## Supported hardware
 - Nvidia Jetson AGX Orin developer kit
 - Lattice CPNX100-ETH-SENSOR-BRIDGE
 - FRAMOS FPA-4.A-AGX-V1A
 
-## Supported Holoscan Sensor Bridge versions and Framos branch compatibility
+## Flashing an HSB (Orin)
 
-This list details the compatibility between Holoscan Sensor Bridge version, framos holoscan drivers branch and Jetpack version.
+This must be done:
 
-|Holoscan Sensor Bridge versions|framos-holoscan-drivers branch|Jetpack version|Release notes|
-|-------------------------------|------------------------------|---------------|-------------|
-| Holoscan Sensor Bridge v2.0.0 |     framos-holoscan-2.0.0    |JP6.0 release 2|[framos-holoscan-2.0.0](https://github.com/framosimaging/framos-holoscan-drivers/wiki/Release-Notes-framos%E2%80%90holoscan%E2%80%902.0.0)|
+- From an Orin
+- Over ethernet connected to SFP 0
+- Using <https://github.com/marainc/holoscan-sensor-bridge/tree/framos-holoscan-2.0.0>
 
-# Short procedure
+### Steps for a new HSB (with Orin already set up)
 
-## 1. Flash and setup Nvidia Jetson AGX Orin
-- [Installation and building the Framos Holoscan Sensor Bridge container](https://github.com/framosimaging/framos-holoscan-drivers/wiki/Installation-and-building-the-Framos-Holoscan-Sensor-Bridge-container)
+1. Connect ethernet
+2. Connect power
+3. Bring up the network interface:
 
-## 2. Run Framos Holoscan Sensor Bridge container examples
+   ```bash
+   sudo nmcli connection up hololink-eno1
+   ```
 
--  [Framos Holoscan Sensor Bridge container examples guide ](https://github.com/framosimaging/framos-holoscan-drivers/wiki/Framos-Holoscan-Sensor-Bridge-container-examples-guide)
+4. Verify connectivity:
+
+   ```bash
+   ping 192.168.0.2
+   ```
+
+5. Enter the container:
+
+   ```bash
+   cd ~/holoscan-sensor-bridge && sh docker/demo.sh
+   ```
+
+6. Program the HSB (to 2412):
+
+   ```bash
+   hololink --force program scripts/manifest-2507.yaml
+   ```
+
+7. Program to 2507:
+
+   ```bash
+   program_lattice_cpnx100 --force scripts/manifest-2507.yaml
+   ```
+
+8. Verify the update:
+
+   ```bash
+   hololink enumerate
+   ```
+
+   This should now show 2507.
+
+## Detailed documentation
+
+### 1. Flash and setup Nvidia Jetson AGX Orin
+
+See [Installation and building the Framos Holoscan Sensor Bridge container](https://github.com/framosimaging/framos-holoscan-drivers/wiki/Installation-and-building-the-Framos-Holoscan-Sensor-Bridge-container)
+
+### 2. Run Framos Holoscan Sensor Bridge container examples
+
+See [Framos Holoscan Sensor Bridge container examples guide](https://github.com/framosimaging/framos-holoscan-drivers/wiki/Framos-Holoscan-Sensor-Bridge-container-examples-guide)
